@@ -46,7 +46,7 @@ jobs:
         missed=$(xmllint --xpath 'string(/report/counter[@type="INSTRUCTION"/@missed)' target/site/jacoco/jacoco.xml)
         coverage=$((covered * 100 / (covered + missed)))
         echo "Coverage value is $coverage
-        if [ $coverage -lt ${{ evn.REQUIRED_CODE_COVERAGE_PERCENT }} ]
+        if [ $coverage -lt ${{ env.REQUIRED_CODE_COVERAGE_PERCENT }} ]
           then
             result=failure
           else
@@ -60,7 +60,7 @@ jobs:
       with:
         coverage-badge-filename: coverage.svg
         badges-directory: target/site/jacoco
-    
+
     - name: Setup Docker Context for buildx
       run: docker context create builders
     - name: Setup Docker Buildx
