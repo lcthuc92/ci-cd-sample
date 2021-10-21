@@ -10,6 +10,7 @@ on:
     branches: [ main ]
 env:
   APP_VERSION: 0.0.3-SNAPSHOT
+  REQUIRED_CODE_COVERAGE_PERCENT: 70
 
 jobs:
   build:
@@ -24,8 +25,42 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
         cache: maven
+    - name: Cache Maven package
+      uses: actions/cache@v2
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ runner.os }}-m2
+    - name: Install xmllint tool
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install libxml2-utils
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - name: Collect code coverage percent
+      id: collect-coverage
+      shell: bash
+      run: |
+        covered=$(xmllint --xpath 'string(/report/counter[@type="INSTRUCTION"/@covered)' target/site/jacoco/jacoco.xml)
+        missed=$(xmllint --xpath 'string(/report/counter[@type="INSTRUCTION"/@missed)' target/site/jacoco/jacoco.xml)
+        coverage=$((covered * 100 / (covered + missed)))
+        echo "Coverage value is $coverage
+        if [ $coverage -lt ${{ evn.REQUIRED_CODE_COVERAGE_PERCENT }} ]
+          then
+            result=failure
+          else
+            result=success
+        fi
+        echo "Coverage status is $result"
+        echo "::set-output name=result::$result"
+        echo "::set-output name=value::$coverage"
+    - name: Generate code coverage badge
+      uses: cicirello/jacoco-badge-generator@v2.1.0
+      with:
+        coverage-badge-filename: coverage.svg
+        badges-directory: target/site/jacoco
+    
     - name: Setup Docker Context for buildx
       run: docker context create builders
     - name: Setup Docker Buildx
