@@ -42,8 +42,8 @@ jobs:
       id: collect-coverage
       shell: bash
       run: |
-        covered=$(xmllint --xpath 'string(/report/counter[@type="INSTRUCTION"/@covered)' target/site/jacoco/jacoco.xml)
-        missed=$(xmllint --xpath 'string(/report/counter[@type="INSTRUCTION"/@missed)' target/site/jacoco/jacoco.xml)
+        covered=$(xmllint --xpath 'string(/report/counter[@type="INSTRUCTION"]/@covered)' target/site/jacoco/jacoco.xml)
+        missed=$(xmllint --xpath 'string(/report/counter[@type="INSTRUCTION"]/@missed)' target/site/jacoco/jacoco.xml)
         coverage=$((covered * 100 / (covered + missed)))
         echo "Coverage value is $coverage
         if [ $coverage -lt ${{ env.REQUIRED_CODE_COVERAGE_PERCENT }} ]
