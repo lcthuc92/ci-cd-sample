@@ -8,6 +8,8 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+env:
+  APP_VERSION: 0.0.2-SNAPSHOT
 
 jobs:
   build:
@@ -24,3 +26,15 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+
+    - name: Login to DockerHub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+    - name: Build and push to DockerHub
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: thucluong/ci-cd-sample:${{ env.APP_VERSION }}
