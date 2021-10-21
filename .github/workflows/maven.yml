@@ -9,7 +9,7 @@ on:
   pull_request:
     branches: [ main ]
 env:
-  APP_VERSION: 0.0.2-SNAPSHOT
+  APP_VERSION: 0.0.3-SNAPSHOT
 
 jobs:
   build:
