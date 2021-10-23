@@ -58,7 +58,24 @@ jobs:
       with:
         coverage-badge-filename: coverage.svg
         badges-directory: target/site/jacoco
-
+#    - name: Upload JaCoCo coverage report
+#      uses: actions/upload-artifact@v2
+#      with:
+#        name: jacoco-report
+#        path: target/site/jacoco/
+    - name: Add check action for code coverage
+      uses: LouisBrunner/checks-action@v1.1.1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        name: "[code-coverage-check]"
+        conclusion: ${{ steps.collect-coverage.outputs.result }}
+        output: |
+          {
+            "summary": "Coveraged: ${{ steps.collect-coverage.outputs.value }}%",
+            "text_description": "Required: ${{ env.REQUIRED_CODE_COVERAGE_PERCENT }}%"
+          }
+        images: |
+          [{"alt": "Badge", "image_url": "target/site/jacoco/coverage.svg", "caption": "${{ steps.collect-coverage.outputs.result }}"}]
   build-and-push-docker-hub:
     runs-on: ubuntu-latest
     needs: [compile-and-unit-test]
