@@ -10,7 +10,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SampleControllerTest {
-	private static final List<String> WC = Arrays.asList("Welcome", "to", "CI/CD");
 	private SampleController controller;
 
 	@BeforeEach
@@ -21,7 +20,7 @@ class SampleControllerTest {
 	@Test
 	void get() {
 		List<String> strings = controller.get();
-		assertEquals(WC, strings);
+		assertEquals(SampleController.WC, strings);
 	}
 
 	@Test
@@ -30,6 +29,6 @@ class SampleControllerTest {
 		assertEquals(hello, SampleController.ID_IS_OUT_OF_BOUND);
 
 		hello = controller.hello(0);
-		assertEquals(hello, WC.get(0));
+		assertEquals(hello, SampleController.WC.get(0));
 	}
 }

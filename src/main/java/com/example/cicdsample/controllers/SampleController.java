@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 public class SampleController {
-	private static final List<String> WC = Arrays.asList("Welcome", "to", "CI/CD");
+	public static final List<String> WC = Arrays.asList("Welcome", "to", "CI/CD", "0.0.4-SNAPSHOT");
 	public static final String ID_IS_OUT_OF_BOUND = "id is out of bound!";
 
 	@GetMapping("/")
